@@ -35,7 +35,7 @@ public class Ball extends Circle {
         } else if (getCenterX() + getRadius() > ballPanel.getWidth()) {
             setCenterX(ballPanel.getWidth() - getRadius());
             this.setSpeedx(-(getSpeed()[0]));
-            }
+        }
 
         if (getCenterY() - getRadius() < 0) {
             setCenterY(getRadius());
