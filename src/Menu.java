@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,70 +9,55 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Menu extends JMenuBar {
-    BallPanel ballPanel;
+class Menu extends JMenuBar {
 
-    public Menu(BallPanel ballPanel) {
-        this.ballPanel = ballPanel;
+    Menu(BallPanel ballPanel) {
         JMenu meno = new JMenu("Menu");
         this.add(meno);
         JMenuItem save = new JMenuItem("Save");
         JMenuItem load = new JMenuItem("Load");
         JMenuItem exit = new JMenuItem("Exit");
-        load.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
-                fc.showOpenDialog(ballPanel);
-                File file = new File(fc.getSelectedFile().getPath());
-
-                BufferedReader br = null;
-                try {
-                    br = new BufferedReader(new FileReader(file));
-                    String st;
-                    String[] ball = new String[6];
-                    ArrayList<Ball> balls = new ArrayList<Ball>();
-                    while ((st = br.readLine()) != null) {
-
-                        ball = st.split(" ");
-                        balls.add(new Ball(Double.parseDouble(ball[0]), Double.parseDouble(ball[1]), Double.parseDouble(ball[2]), Float.parseFloat(ball[4])
-                                , Float.parseFloat(ball[5]), Integer.parseInt(ball[3]), ballPanel));
-                    }
-                    ballPanel.setBalls(balls);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
+        load.addActionListener(e -> {
+            final JFileChooser fc = new JFileChooser();
+            fc.showOpenDialog(ballPanel);
+            File file = new File(fc.getSelectedFile().getPath());
+            BufferedReader br;
+            try {
+                br = new BufferedReader(new FileReader(file));
+                String st;
+                String[] ball;
+                ArrayList<Ball> balls = new ArrayList<>();
+                while ((st = br.readLine()) != null) {
+                    ball = st.split(" ");
+                    balls.add(new Ball(Double.parseDouble(ball[0]), Double.parseDouble(ball[1]),
+                            Double.parseDouble(ball[2]), Float.parseFloat(ball[4])
+                            , Float.parseFloat(ball[5]), Integer.parseInt(ball[3]), ballPanel));
                 }
-
+                ballPanel.setBalls(balls);
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
 
         });
-        save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
-                fc.showSaveDialog(ballPanel);
-                ArrayList<String> lines = new ArrayList<String>();
-                Ball ball;
-                for (int i = 0; i < ballPanel.getBalls().size(); i++) {
-                    ball = ballPanel.getBalls().get(i);
-                    lines.add(ball.getCenterX() + " " + ball.getCenterY() + " " +
-                            ball.getRadius() + " " + ball.getMass() + " " +
-                            ball.getSpeed()[0] + " " + ball.getSpeed()[1]);
-                }
-                Path file = Paths.get(fc.getSelectedFile().getPath());
-                try {
-                    Files.write(file, lines, Charset.forName("UTF-8"));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        save.addActionListener(e -> {
+            final JFileChooser fc = new JFileChooser();
+            fc.showSaveDialog(ballPanel);
+            ArrayList<String> lines = new ArrayList<>();
+            Ball ball;
+            for (int i = 0; i < ballPanel.getBalls().size(); i++) {
+                ball = ballPanel.getBalls().get(i);
+                lines.add(ball.getCenterX() + " " + ball.getCenterY() + " " +
+                        ball.getRadius() + " " + ball.getMass() + " " +
+                        ball.getSpeed()[0] + " " + ball.getSpeed()[1]);
+            }
+            Path file = Paths.get(fc.getSelectedFile().getPath());
+            try {
+                Files.write(file, lines, Charset.forName("UTF-8"));
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        exit.addActionListener(e -> System.exit(0));
         meno.add(load);
         meno.add(save);
         meno.add(exit);

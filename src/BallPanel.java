@@ -1,6 +1,3 @@
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,83 +8,71 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 public class BallPanel extends JPanel {
-    public ArrayList<Ball> balls = new ArrayList<Ball>();
-    boolean temp = false;
-    Ball tempball;
-    Line2D line;
-    boolean hasswall = false;
-    int[] speedtemp = new int[2];
-    JLabel tempspeed = new JLabel("");
-    private int currentFrameRate;
-    Run run;
-    BallPanel panel = this;
-    long previousTime = System.currentTimeMillis();
-    long currentTime = previousTime;
-    long elapsedTime;
-    Wall wall = new Wall();
-    int[] balltemp = new int[2];
+    ArrayList<Ball> balls = new ArrayList<>();
+    private boolean temp = false;
+    private Ball tempball;
+    private Line2D line;
+    private int[] speedtemp = new int[2];
+    private JLabel tempspeed = new JLabel("");
+    private Run run;
+    private BallPanel panel = this;
+    private long previousTime = System.currentTimeMillis();
+    private long currentTime = previousTime;
+    private long elapsedTime;
+    private Wall wall = new Wall();
+    private int[] balltemp = new int[2];
 
-    public BallPanel(Run run) {
+    BallPanel(Run run) {
         this.run = run;
         MouseHandler mouseHandler = new MouseHandler();
         addMouseMotionListener(mouseHandler);
         addMouseListener(mouseHandler);
-        this.setBounds(run.getSettings().getWidth(), 0, run.getWidth() - run.getSettings().getWidth(), run.getHeight());
+        this.setBounds(run.getSettings().getWidth(), 0, run.getWidth() -
+                run.getSettings().getWidth(), run.getHeight());
         this.setBackground(Color.black);
         tempspeed.setVisible(false);
 
         this.add(tempspeed);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    currentTime = System.currentTimeMillis();
-                    elapsedTime = (currentTime - previousTime);
+        new Thread(() -> {
+            while (true) {
+                currentTime = System.currentTimeMillis();
+                elapsedTime = (currentTime - previousTime);
 
-                    handel(elapsedTime / 1000f);
-                    panel.repaint();
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    previousTime = currentTime;
+                handel(elapsedTime / 1000f);
+                panel.repaint();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                previousTime = currentTime;
             }
         }).start();
 
 
     }
 
-    public ArrayList<Ball> getBalls() {
+    ArrayList<Ball> getBalls() {
         return balls;
     }
 
-    public boolean isHasswall() {
-        return hasswall;
-    }
-
-    public Wall getWall() {
-        return wall;
-    }
-
-    public int[] getBalltemp() {
+    private int[] getBalltemp() {
         return balltemp;
     }
 
-    public void settempmass(int mass) {
+    void settempmass(int mass) {
         this.balltemp[0] = mass;
     }
 
-    public void settemprad(int rad) {
+    void settemprad(int rad) {
         this.balltemp[1] = rad;
     }
 
-    public void setBalls(ArrayList<Ball> balls) {
+    void setBalls(ArrayList<Ball> balls) {
         this.balls = balls;
     }
 
-    void handel(float elapsedTime) {
+    private void handel(float elapsedTime) {
         double distance;
         for (int i = 0; i < balls.size(); i++) {
             Ball ball = balls.get(i);
@@ -114,8 +99,7 @@ public class BallPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.draw(wall);
-        for (int i = 0; i < balls.size(); i++) {
-            Ball ball = balls.get(i);
+        for (Ball ball : balls) {
             Ellipse2D.Double circle = new Ellipse2D.Double(ball.getCenterX() - ball.getRadius(), ball.getCenterY() - ball.getRadius(), ball.getRadius() * 2, ball.getRadius() * 2);
             g2.setColor(new Color(ball.getColor()[0], ball.getColor()[1], ball.getColor()[2]));
             g2.fill(circle);
@@ -134,7 +118,7 @@ public class BallPanel extends JPanel {
     private class MouseHandler extends MouseAdapter implements MouseMotionListener {
         public void mousePressed(MouseEvent e) {
             if (run.settings.isWallc()) {
-                hasswall = true;
+                boolean hasswall = true;
                 wall.addPoint(e.getX(), e.getY());
                 System.out.println(wall.getNpoints());
             } else {

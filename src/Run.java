@@ -3,9 +3,8 @@ import javax.swing.*;
 public class Run extends JFrame {
     Settings settings;
     BallPanel ballPanel;
-    Menu menu;
 
-    Run() {
+    private Run() {
         this.setBounds(0, 0, 1280, 720);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("fizik");
@@ -13,7 +12,7 @@ public class Run extends JFrame {
         settings = new Settings(this);
         this.add(settings);
         ballPanel = new BallPanel(this);
-        menu = new Menu(ballPanel);
+        Menu menu = new Menu(ballPanel);
         this.setJMenuBar(menu);
         this.add(ballPanel);
         this.setVisible(true);
@@ -23,7 +22,7 @@ public class Run extends JFrame {
         new Run();
     }
 
-    public Settings getSettings() {
+    Settings getSettings() {
         return settings;
     }
 }
